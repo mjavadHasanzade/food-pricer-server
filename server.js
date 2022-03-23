@@ -1,6 +1,9 @@
 const express = require("express");
 const sequelize = require("./database");
 const Ingredients = require("./Models/ingredients");
+const ingredientsRoutes = require("./Routes/ingredients");
+var bodyParser = require('body-parser')
+
 require("dotenv").config();
 
 //? Inintialize DATABASE
@@ -20,9 +23,18 @@ sequelize.sync({ force: true }).then(async () => {
 const app = express();
 
 app.get("/", async (req, res) => {
-  const ingredients = await Ingredients.findAndCountAll();
-  res.send(ingredients);
+  res.send({
+    1: "/ingredient",
+  });
 });
+
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.use(express.json());
+
+app.use("/ingredients", ingredientsRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
