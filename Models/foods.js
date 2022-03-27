@@ -1,5 +1,6 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
+const Ingredients = require("../Models/ingredients");
 
 const Foods = sequelize.define(
   "Foods",
@@ -8,15 +9,13 @@ const Foods = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
+      primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    ingredients: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+
     priceByIngredient: {
       type: DataTypes.REAL,
       allowNull: false,
@@ -32,5 +31,8 @@ const Foods = sequelize.define(
   },
   { sequelize }
 );
+
+Ingredients.belongsToMany(Foods, { through: "FoodByIngredients" });
+Foods.belongsToMany(Ingredients, { through: "FoodByIngredients" });
 
 module.exports = Foods;

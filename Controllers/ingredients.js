@@ -1,7 +1,9 @@
+const Foods = require("../Models/foods");
 const Ingredients = require("../Models/ingredients");
+const ingredientValidator = require("../validators/ingredients");
 
 const getAll = async (req, res) => {
-  const ingredients = await Ingredients.findAndCountAll();
+  const ingredients = await Ingredients.findAndCountAll({ include: Foods });
 
   res.send(ingredients);
 };
@@ -17,6 +19,12 @@ const getOne = async (req, res) => {
 };
 
 const createOne = async (req, res) => {
+  const { error } = ingredientValidator(req);
+
+  if (error) {
+    return res.send({ message: error.message });
+  }
+
   const ingredient = await Ingredients.create(req.body);
   res.send({ ingredient, message: "Ingredient created seccessfuly" });
 };
