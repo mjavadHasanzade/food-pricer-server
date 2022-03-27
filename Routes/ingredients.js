@@ -1,4 +1,4 @@
-const { getAll, getOne, createOne, editOne, deleteOne } = require('../controllers/ingredients.js');
+const { getAll, getOne, createOne, editOne, deleteOne } = require('../Controllers/ingredients');
 const router = require('express').Router();
 // const pagination = require('../middlewars/pagination');
 
