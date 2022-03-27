@@ -1,14 +1,17 @@
 const express = require("express");
 const sequelize = require("./database");
 const Ingredients = require("./Models/ingredients");
-const ingredientsRoutes = require("./Routes/ingredients");
 var bodyParser = require("body-parser");
 const Foods = require("./Models/foods");
+
+//?Rotes
+const ingredientsRoutes = require("./Routes/ingredients");
+const foodsRoutes = require("./Routes/foods");
 
 require("dotenv").config();
 
 //? Inintialize DATABASE
-sequelize.sync().then(async () => {
+sequelize.sync({ force: true }).then(async () => {
   for (let i = 1; i <= 15; i++) {
     const ingredient = {
       name: `ingredient ${i}`,
@@ -33,6 +36,7 @@ const app = express();
 app.get("/", async (req, res) => {
   res.send({
     1: "/ingredients",
+    2: "/foods",
   });
 });
 
@@ -45,7 +49,7 @@ app.use(
 app.use(express.json());
 
 app.use("/ingredients", ingredientsRoutes);
-app.use("/foods", ingredientsRoutes);
+app.use("/foods", foodsRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
