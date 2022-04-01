@@ -7,6 +7,7 @@ const getAll = async (req, res) => {
   const food = await Foods.findAndCountAll({
     include: Ingredients,
     order: [["updatedAt", "DESC"]],
+    distinct: true, //? for incorrect count after include
   });
 
   res.send(food);
@@ -33,13 +34,14 @@ const createOne = async (req, res) => {
   const food = await Foods.create(req.body);
 
   ingredientsArray.map(async (item) => {
-    const IngItem = await Ingredients.findOne({ where: item });
+    const IngItem = await Ingredients.findOne({ where: item.ingId });
     if (!IngItem) {
       return false;
     }
     await FoodByIngredients.create({
       FoodId: food.id,
-      IngredientId: item,
+      IngredientId: item.ingId,
+      IngredientQuantity: item.qty,
     });
   });
 
@@ -75,14 +77,15 @@ const editOne = async (req, res) => {
     ingredientsArray = req.body.ingredients;
 
     ingredientsArray.map(async (item) => {
-      const IngItem = await Ingredients.findOne({ where: item });
+      const IngItem = await Ingredients.findOne({ where: item.ingId });
       if (!IngItem) {
         return false;
       }
 
       await FoodByIngredients.create({
         FoodId: food.id,
-        IngredientId: item,
+        IngredientId: item.ingId,
+        IngredientQuantity: item.qty,
       });
     });
   }
