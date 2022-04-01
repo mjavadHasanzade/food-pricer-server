@@ -4,7 +4,10 @@ const Ingredients = require("../Models/ingredients");
 const foodValidator = require("../validators/foods");
 
 const getAll = async (req, res) => {
-  const food = await Foods.findAndCountAll({ include: Ingredients });
+  const food = await Foods.findAndCountAll({
+    include: Ingredients,
+    order: [["updatedAt", "DESC"]],
+  });
 
   res.send(food);
 };
