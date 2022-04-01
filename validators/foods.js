@@ -14,7 +14,15 @@ const foodValidator = (data) => {
       priceByIngredient: Joi.number().required().min(0).messages({
         "number.min": "product_price_size",
       }),
-      ingredients: Joi.array().items(Joi.number().integer()).required().unique((a, b) => a === b),
+      ingredients: Joi.array()
+        .items(
+          Joi.object().keys({
+            ingId: Joi.number().required(),
+            qty: Joi.number().required(),
+          })
+        )
+        .required()
+        .unique((a, b) => a === b),
       benefit: Joi.number().required().min(0).messages({
         "number.min": "product_price_size",
       }),
@@ -30,7 +38,14 @@ const foodValidator = (data) => {
       priceByIngredient: Joi.number().min(0).messages({
         "number.min": "product_price_size",
       }),
-      ingredients: Joi.array().items(Joi.number().integer()).unique((a, b) => a === b),
+      ingredients: Joi.array()
+        .items(
+          Joi.object().keys({
+            ingId: Joi.number().required(),
+            qty: Joi.number().required(),
+          })
+        )
+        .unique((a, b) => a === b),
       benefit: Joi.number().min(0).messages({
         "number.min": "product_price_size",
       }),
