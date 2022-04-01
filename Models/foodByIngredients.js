@@ -20,6 +20,10 @@ const FoodByIngredients = sequelize.define(
         key: "id",
       },
     },
+    IngredientQuantity: {
+      type: DataTypes.REAL,
+      allowNull: false,
+    },
   },
   { sequelize, timestamps: false }
 );
