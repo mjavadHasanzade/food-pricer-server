@@ -26,7 +26,7 @@ const createOne = async (req, res) => {
   const { error } = foodValidator(req);
 
   if (error) {
-    return res.send({ message: error.message });
+    return res.status(400).send({ message: error.message });
   }
 
   ingredientsArray = req.body.ingredients;
@@ -57,7 +57,7 @@ const editOne = async (req, res) => {
   const { error } = foodValidator(req);
 
   if (error) {
-    return res.send({ message: error.message });
+    return res.status(400).send({ message: error.message });
   }
 
   const body = req.body;

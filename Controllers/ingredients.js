@@ -24,7 +24,7 @@ const createOne = async (req, res) => {
   const { error } = ingredientValidator(req);
 
   if (error) {
-    return res.send({ message: error.message });
+    return res.status(400).send({ message: error.message });
   }
 
   const ingredient = await Ingredients.create(req.body);
