@@ -14,10 +14,6 @@ const Ingredients = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    quantity: {
-      type: DataTypes.REAL,
-      allowNull: false,
-    },
     price: {
       type: DataTypes.REAL,
       allowNull: false,
