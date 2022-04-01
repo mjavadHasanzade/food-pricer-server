@@ -39,6 +39,12 @@ const editOne = async (req, res) => {
     return;
   }
 
+  const { error } = ingredientValidator(req);
+
+  if (error) {
+    return res.status(400).send({ message: error.message });
+  }
+
   const body = req.body;
 
   const ingredient = await Ingredients.update(body, { where: { id } });
