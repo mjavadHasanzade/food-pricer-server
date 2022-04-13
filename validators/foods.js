@@ -22,7 +22,7 @@ const foodValidator = (data) => {
           })
         )
         .required()
-        .unique((a, b) => a === b),
+        .unique((a, b) => a === b).min(1).required(),
       benefit: Joi.number().required().min(0).messages({
         "number.min": "product_price_size",
       }),

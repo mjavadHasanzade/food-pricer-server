@@ -40,8 +40,8 @@ const createOne = async (req, res) => {
     }
     await FoodByIngredients.create({
       FoodId: food.id,
-      IngredientId: item.ingId,
-      IngredientQuantity: item.qty,
+      IngredientId: Number(item.ingId),
+      IngredientQuantity: Number(item.qty),
     });
   });
 
@@ -76,16 +76,16 @@ const editOne = async (req, res) => {
   if (body.ingredients && body.ingredients.length > 0) {
     ingredientsArray = req.body.ingredients;
 
+    await FoodByIngredients.destroy({ where: { FoodId: food.id } });
     ingredientsArray.map(async (item) => {
       const IngItem = await Ingredients.findOne({ where: item.ingId });
       if (!IngItem) {
         return false;
       }
-
       await FoodByIngredients.create({
         FoodId: food.id,
-        IngredientId: item.ingId,
-        IngredientQuantity: item.qty,
+        IngredientId: Number(item.ingId),
+        IngredientQuantity: Number(item.qty),
       });
     });
   }
