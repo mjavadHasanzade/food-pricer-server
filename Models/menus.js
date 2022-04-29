@@ -1,24 +1,19 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
+const Foods = require("./foods");
+const MenuByFoods = require("./menuByFood");
 
-const Menues = sequelize.define(
-  "Foods",
+const Menus = sequelize.define(
+  "Menus",
   {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
+      primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    foods: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    user: {
-      type: DataTypes.NUMBER,
       allowNull: false,
     },
     isActiveMenu: {
@@ -30,4 +25,7 @@ const Menues = sequelize.define(
   { sequelize }
 );
 
-module.exports = Menues;
+Menus.belongsToMany(Foods, { through: "MenuByFoods" });
+Foods.belongsToMany(Menus, { through: "MenuByFoods" });
+
+module.exports = Menus;

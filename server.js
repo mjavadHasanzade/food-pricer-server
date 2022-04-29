@@ -7,6 +7,7 @@ const Foods = require("./Models/foods");
 //?Rotes
 const ingredientsRoutes = require("./Routes/ingredients");
 const foodsRoutes = require("./Routes/foods");
+const menusRoutes = require("./Routes/menus");
 
 require("dotenv").config();
 
@@ -50,6 +51,7 @@ app.use(express.json());
 
 app.use("/ingredients", ingredientsRoutes);
 app.use("/foods", foodsRoutes);
+app.use("/menus", menusRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
