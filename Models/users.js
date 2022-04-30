@@ -13,15 +13,18 @@ const Users = sequelize.define("Users", {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   family: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  email: {
+    type: DataTypes.STRING,
+    unique: true,
+  },
   role: {
     type: DataTypes.STRING,
-    allowNull: false,
     defaultValue: "user",
   },
   password: {
