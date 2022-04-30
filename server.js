@@ -3,22 +3,35 @@ const sequelize = require("./database");
 const Ingredients = require("./Models/ingredients");
 var bodyParser = require("body-parser");
 const Foods = require("./Models/foods");
+const Users = require("./Models/users");
+const Auth = require("./middlewares/Auth");
 
 //?Rotes
 const ingredientsRoutes = require("./Routes/ingredients");
 const foodsRoutes = require("./Routes/foods");
 const menusRoutes = require("./Routes/menus");
+const userRoutes = require("./Routes/user");
 
 require("dotenv").config();
 
 //? Inintialize DATABASE
 sequelize.sync({ force: true }).then(async () => {
+  await Users.create({
+    name: "mj",
+    family: "hsnz",
+    role: "admin",
+    password: "123456",
+    isActive: true,
+    email: "hjavad522@gmail.com",
+  });
+
   for (let i = 1; i <= 15; i++) {
     const ingredient = {
       name: `ingredient ${i}`,
       quantity: Math.floor(Math.random() * 100),
       price: Math.floor(Math.random() * 1000000),
       isComplete: Math.random() > 0.5 ? true : false,
+      UserId: 1,
     };
     await Ingredients.create(ingredient);
     const food = {
@@ -26,6 +39,7 @@ sequelize.sync({ force: true }).then(async () => {
       priceByIngredient: Math.floor(Math.random() * 10000),
       priceByRestaurant: Math.floor(Math.random() * 1000000),
       benefit: Math.floor(Math.random() * 50),
+      UserId: 1,
     };
     await Foods.create(food);
   }
@@ -38,6 +52,7 @@ app.get("/", async (req, res) => {
   res.send({
     1: "/ingredients",
     2: "/foods",
+    3: "/menues",
   });
 });
 
@@ -49,9 +64,10 @@ app.use(
 
 app.use(express.json());
 
-app.use("/ingredients", ingredientsRoutes);
-app.use("/foods", foodsRoutes);
-app.use("/menus", menusRoutes);
+app.use("/ingredients", Auth, ingredientsRoutes);
+app.use("/foods", Auth, foodsRoutes);
+app.use("/menus", Auth, menusRoutes);
+app.use("/user", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
