@@ -8,6 +8,7 @@ const getAll = async (req, res) => {
     include: Ingredients,
     order: [["updatedAt", "DESC"]],
     distinct: true, //? for incorrect count after include
+    where: { userId: req.user.userId },
   });
 
   res.send(food);
@@ -15,7 +16,10 @@ const getAll = async (req, res) => {
 
 const getOne = async (req, res) => {
   const id = req.params.id;
-  const food = await Foods.findOne({ where: { id }, include: Ingredients });
+  const food = await Foods.findOne({
+    where: { id, userId: req.user.userId },
+    include: Ingredients,
+  });
   if (!food) {
     res.status(404).send({ message: "Food Not Found" });
     return;
@@ -30,6 +34,7 @@ const createOne = async (req, res) => {
     return res.status(400).send({ message: error.message });
   }
 
+  req.body.UserId = req.user.userId;
   ingredientsArray = req.body.ingredients;
   const food = await Foods.create(req.body);
 
@@ -63,15 +68,14 @@ const editOne = async (req, res) => {
   }
 
   const body = req.body;
-
-  const food = await Foods.findOne({ where: { id } });
+  const food = await Foods.findOne({ where: { id, userId: req.user.userId } });
 
   if (!food) {
     res.status(404).send({ message: "Food Not Found" });
     return;
   }
 
-  await Foods.update(body, { where: { id } });
+  await Foods.update(body, { where: { id, userId: req.user.userId } });
 
   if (body.ingredients && body.ingredients.length > 0) {
     ingredientsArray = req.body.ingredients;
@@ -103,7 +107,9 @@ const deleteOne = async (req, res) => {
     return;
   }
 
-  const food = await Foods.destroy({ where: { id: id } });
+  const food = await Foods.destroy({
+    where: { id: id, userId: req.user.userId },
+  });
 
   if (food == 0) {
     res.status(404).send({ message: "food_not_found_exception" });

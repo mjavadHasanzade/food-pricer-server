@@ -7,8 +7,8 @@ const menuValidator = require("../validators/menus");
 const getAll = async (req, res) => {
   const menus = await Menus.findAndCountAll({
     order: [["updatedAt", "DESC"]],
-    include: Foods,
     distinct: true,
+    where: { userId: req.user.userId },
   });
 
   res.send(menus);
@@ -16,7 +16,10 @@ const getAll = async (req, res) => {
 
 const getOne = async (req, res) => {
   const id = req.params.id;
-  const menu = await Menus.findOne({ where: { id } });
+  const menu = await Menus.findOne({
+    where: { id, userId: req.user.userId },
+    include: Foods,
+  });
   if (!menu) {
     res.status(404).send({ message: "Menu Not Found" });
     return;
@@ -30,6 +33,7 @@ const createOne = async (req, res) => {
   if (error) {
     return res.status(400).send({ message: error.message });
   }
+  req.body.UserId = req.user.userId;
 
   const foodsArray = req.body.foods;
   const menu = await Menus.create(req.body);
@@ -63,14 +67,14 @@ const editOne = async (req, res) => {
   }
 
   const body = req.body;
-  const menu = await Menus.findOne({ where: { id } });
+  const menu = await Menus.findOne({ where: { id, userId: req.user.userId } });
 
   if (!menu) {
     res.status(404).send({ message: "Menu Not Found" });
     return;
   }
 
-  await Menus.update(body, { where: { id } });
+  await Menus.update(body, { where: { id, userId: req.user.userId } });
 
   if (body.foods && body.foods.length > 0) {
     const foodsArray = req.body.foods;
@@ -88,7 +92,10 @@ const editOne = async (req, res) => {
     });
   }
 
-  const editedMenu = await Menus.findOne({ where: { id }, include: Foods });
+  const editedMenu = await Menus.findOne({
+    where: { id, userId: req.user.userId },
+    include: Foods,
+  });
 
   res.send({ Menu: editedMenu, message: "Food edited seccessfuly" });
 };
@@ -101,7 +108,9 @@ const deleteOne = async (req, res) => {
     return;
   }
 
-  const menu = await Menus.destroy({ where: { id: id } });
+  const menu = await Menus.destroy({
+    where: { id: id, userId: req.user.userId },
+  });
 
   if (menu == 0) {
     res.status(404).send({ message: "menu_not_found_exception" });

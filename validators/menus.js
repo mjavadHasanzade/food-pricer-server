@@ -8,7 +8,7 @@ const menuValidator = (data) => {
       name: Joi.string().required().messages({
         "any.required": "menu_name_null",
       }),
-      isActive: Joi.boolean(),
+      isActiveMenu: Joi.boolean(),
 
       foods: Joi.array()
         .items(
@@ -26,7 +26,7 @@ const menuValidator = (data) => {
       name: Joi.string().messages({
         "any.required": "menu_name_null",
       }),
-      isActive: Joi.boolean(),
+      isActiveMenu: Joi.boolean(),
 
       foods: Joi.array()
         .items(

@@ -5,6 +5,7 @@ const ingredientValidator = require("../validators/ingredients");
 const getAll = async (req, res) => {
   const ingredients = await Ingredients.findAndCountAll({
     order: [["updatedAt", "DESC"]],
+    where: { userId: req.user.userId },
   });
 
   res.send(ingredients);
@@ -12,7 +13,9 @@ const getAll = async (req, res) => {
 
 const getOne = async (req, res) => {
   const id = req.params.id;
-  const ingredient = await Ingredients.findOne({ where: { id } });
+  const ingredient = await Ingredients.findOne({
+    where: { id, userId: req.user.userId },
+  });
   if (!ingredient) {
     res.status(404).send({ message: "Ingredient Not Found" });
     return;
@@ -26,6 +29,7 @@ const createOne = async (req, res) => {
   if (error) {
     return res.status(400).send({ message: error.message });
   }
+  req.body.UserId = req.user.userId;
 
   const ingredient = await Ingredients.create(req.body);
   res.send({ ingredient, message: "Ingredient created seccessfuly" });
@@ -47,7 +51,9 @@ const editOne = async (req, res) => {
 
   const body = req.body;
 
-  const ingredient = await Ingredients.update(body, { where: { id } });
+  const ingredient = await Ingredients.update(body, {
+    where: { id, userId: req.user.userId },
+  });
 
   if (ingredient[0] == 0) {
     res.status(404).send({ message: "Ingredient Not Found" });
@@ -65,7 +71,9 @@ const deleteOne = async (req, res) => {
     return;
   }
 
-  const ingredient = await Ingredients.destroy({ where: { id: id } });
+  const ingredient = await Ingredients.destroy({
+    where: { id: id, userId: req.user.userId },
+  });
 
   if (ingredient == 0) {
     res.status(404).send({ message: "ingredient_not_found_exception" });
